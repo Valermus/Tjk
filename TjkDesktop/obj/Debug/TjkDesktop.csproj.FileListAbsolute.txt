@@ -1,0 +1,42 @@
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\bin\Debug\TjkDesktop.exe
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\bin\Debug\HtmlAgilityPack.dll
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\bin\Debug\TjkDesktop.exe.config
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\bin\Debug\TJK.accdb
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\bin\Debug\TjkDesktop.pdb
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\bin\Debug\HtmlAgilityPack.xml
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\TjkDesktop.csprojResolveAssemblyReference.cache
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\LoadingScreen.baml
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\MainWindow.baml
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\App.baml
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\LoadingScreen.g.cs
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\MainWindow.g.cs
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\App.g.cs
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\TjkDesktop_Content.g.cs
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\TjkDesktop_MarkupCompile.cache
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\TjkDesktop.g.resources
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\TjkDesktop.Properties.Resources.resources
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\TjkDesktop.csproj.GenerateResource.Cache
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\TjkDesktop.exe
+C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\TjkDesktop.pdb
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\TjkDesktop.exe.config
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.exe
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.pdb
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\TJK.accdb
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\TjkDesktop.exe
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\TjkDesktop.pdb
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\HtmlAgilityPack.dll
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\HtmlAgilityPack.xml
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.csprojResolveAssemblyReference.cache
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\LoadingScreen.baml
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\MainWindow.baml
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\App.baml
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\LoadingScreen.g.cs
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\MainWindow.g.cs
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\App.g.cs
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop_Content.g.cs
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop_MarkupCompile.cache
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.g.resources
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.Properties.Resources.resources
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.csproj.GenerateResource.Cache
