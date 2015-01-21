@@ -198,19 +198,23 @@ namespace TjkDesktop
                 ResponseHorseDetailSet response = WebCrawl.InitializeHorsesAndDetails(sender);
                 if (response.failedToRetrieveIds != null)
                 {
-                    while (response.failedToRetrieveIds.Count > 0)
+                    Dispatcher.Invoke(new Action(() =>
                     {
-                        string msg = string.Join(Environment.NewLine, response.failedToRetrieveIds);
-                        if (MessageBox.Show("Bu ID'deki atların detaylarına ulaşılamamıştır:" + msg + "\nTekrar denensin mi?", "Erişilemeyen At Detayları", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                        while (response.failedToRetrieveIds.Count > 0)
                         {
-                            response = WebCrawl.getHorseDetailsFromList(sender, response.failedToRetrieveIds);
+                            string msg = string.Join(Environment.NewLine, response.failedToRetrieveIds);
+                            if (MessageBox.Show("Bu ID'deki atların detaylarına ulaşılamamıştır: " + msg + "\n Tekrar denensin mi?", "Erişilemeyen At Detayları", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                            {
+                                response = WebCrawl.getHorseDetailsFromList(sender, response.failedToRetrieveIds);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Bu ID'deki atların detaylarına ulaşılamamıştır:" + msg);
+                                break;
+                            }
                         }
-                        else
-                        {
-                            MessageBox.Show("Bu ID'deki atların detaylarına ulaşılamamıştır:" + msg);
-                            break;
-                        }
-                    }
+                    }), null);
+
                 }
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -222,6 +226,11 @@ namespace TjkDesktop
             else if ((Phases)parameters[0] == Phases.Phase4)
             {
                 int result = 0;
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    btnYarisSonuc.IsEnabled = false;
+                    btnYarisSonuc.Content = "Bekleyiniz...";
+                }), null);
                 result = WebCrawl.InitializeYarisSonuclari(sender);
                 if (result == -1)
                 {
@@ -234,6 +243,7 @@ namespace TjkDesktop
                             btnYarisSonuc.Visibility = System.Windows.Visibility.Visible;
                             btnYarisProg.IsEnabled = false;
                             btnYarisSonuc.IsEnabled = false;
+                            btnYarisSonuc.Content = "Yarış Sonuçlarını Getir";
                             lblResult.Content = "Yarış Sonuçları Başarıyla İşlendi...";
                         }), null);
                 }

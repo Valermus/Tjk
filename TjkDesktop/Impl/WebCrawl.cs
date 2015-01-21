@@ -176,6 +176,7 @@ namespace TjkDesktop.Impl
             dTableAdapter.Connection.Open();
             dTableAdapter.Fill(dTable);
             int totalHorseNum = hipodromList.Sum(x => x.kosular.Sum(y => y.horseList.Count));
+            //Hack dto.fail'dan gelindiğinde burasi z.horseDetails null geliyor. Kontrol et.
             int totalDetail = hipodromList.Sum(x => x.kosular.Sum(y => y.horseList.Sum(z => z.horseDetails.Count)));
             UiReporter obj = new UiReporter();
             int counter = 0;
@@ -386,6 +387,7 @@ namespace TjkDesktop.Impl
                                 dTableAdapter.Insert((int?)dto.atId, dto.tarih, horse.atAdi, dto.sehir, dto.mesafe.ToString(), dto.pist, dto.sonucSiraNo, dto.derece, dereceSaniye, dto.kilo.ToString(),
                                     dto.jokey, dto.antrenor, dto.sahip, dto.ganyan, dto.grup, dto.kosuNo, dto.kosuCinsAdi, dto.handikapKum, dto.handikapCim, dto.atIkramiye.ToString(), dto.s20);
                                 obj.status = "Veritabanına yazılıyor..";
+
                             }
                             obj.percentage = total;
                             (sender as BackgroundWorker).ReportProgress((int)Math.Round(total, 8, MidpointRounding.AwayFromZero), obj);
@@ -929,8 +931,21 @@ namespace TjkDesktop.Impl
         {
             ResponseHorseDetailSet response = new ResponseHorseDetailSet();
             UiReporter reporter = new UiReporter();
+            BdayCarrierDto dto = new BdayCarrierDto();
+
+            List<HorseInfoDto> horseDetails;
             int totalHorseNum = hipodromList.Sum(x => x.kosular.Sum(y => y.horseList.Count));
             int counter = 0;
+
+            /* En son tarihli detay db'de var mı */
+            TjkDataSet dateset = new TjkDataSet();
+            TjkDataSet.AtDetayDataTable dTable = dateset.AtDetay;
+            TjkDesktop.App_Data.TjkDataSetTableAdapters.AtDetayTableAdapter dTableAdapter = new App_Data.TjkDataSetTableAdapters.AtDetayTableAdapter();
+            dTableAdapter.Connection.Open();
+            dTableAdapter.Fill(dTable);
+            TjkDataSet.AtDetayRow lastRow;
+            /*DB'deki en son 3 kayıt alınıyor*/
+
             foreach (HipodromDto h in hipodromList)
             {
                 foreach (KosuDto k in h.kosular)
@@ -939,33 +954,70 @@ namespace TjkDesktop.Impl
                     {
                         counter++;
                         reporter.toplamAt = counter + "/" + totalHorseNum;
-                        BdayCarrierDto dto = getHorseDetail(sender, horse.atId, reporter);
+                        lastRow = dTable.Where(aa => aa.AtId == horse.atId).OrderByDescending(ab => ab.Tarih).FirstOrDefault();
+                        dto = getHorseDetail(sender, horse.atId, reporter, lastRow);
                         if (dto.isFailed)
                         {
                             response.failedToRetrieveIds.Add(horse.atId.ToString());
                         }
-                        List<HorseInfoDto> horseDetails = dto.horseInfoList;
-                        horse.horseDetails = horseDetails;
-                        horse.birthDate = dto.birthDay;
+                        else
+                        {
+                            horseDetails = dto.horseInfoList;
+                            horse.horseDetails = horseDetails;
+                            horse.birthDate = dto.birthDay;
+                        }
                     }
                 }
             }
+            dTableAdapter.Connection.Close();
             return response;
         }
         public static ResponseHorseDetailSet getHorseDetailsFromList(object sender, List<string> horseIDList)
         {
-            //Hack bura gözden geçirilecek
             ResponseHorseDetailSet response = new ResponseHorseDetailSet();
-            List<BdayCarrierDto> dtoList = new List<BdayCarrierDto>();
+            BdayCarrierDto dto = new BdayCarrierDto();
+            List<HorseInfoDto> horseDetails = new List<HorseInfoDto>();
             UiReporter reporter = new UiReporter();
+            /* En son tarihli detay db'de var mı */
+            TjkDataSet dateset = new TjkDataSet();
+            TjkDataSet.AtDetayRow lastRow;
+            TjkDataSet.AtDetayDataTable dTable = dateset.AtDetay;
+            TjkDesktop.App_Data.TjkDataSetTableAdapters.AtDetayTableAdapter dTableAdapter = new App_Data.TjkDataSetTableAdapters.AtDetayTableAdapter();
+            dTableAdapter.Connection.Open();
+            dTableAdapter.Fill(dTable);
             foreach (string horseId in horseIDList)
             {
-                BdayCarrierDto dto = getHorseDetail(sender, getNumericPart(horseId), reporter);
-                if (dto.isFailed) { response.failedToRetrieveIds.Add(horseId); }
+                lastRow = dTable.Where(aa => aa.AtId == int.Parse(horseId)).OrderByDescending(ab => ab.Tarih).FirstOrDefault();
+                dto = getHorseDetail(sender, getNumericPart(horseId), reporter, lastRow);
+                if (dto.isFailed)
+                {
+                    response.failedToRetrieveIds.Add(horseId);
+                }
+                else
+                {
+                    //Hack geliştirme yapılmalı lambda ile 
+                    foreach (HipodromDto h in hipodroms)
+                    {
+                        foreach (KosuDto k in h.kosular)
+                        {
+                            foreach (HorseDto horse in k.horseList)
+                            {
+                                if (horse.atId == int.Parse(horseId))
+                                {
+                                    horseDetails = dto.horseInfoList;
+                                    horse.horseDetails = horseDetails;
+                                    horse.birthDate = dto.birthDay;
+                                }
+
+                            }
+                        }
+                    }
+                }
             }
+            dTableAdapter.Connection.Close();
             return response;
         }
-        public static BdayCarrierDto getHorseDetail(object sender, int horseID, UiReporter reporter)
+        public static BdayCarrierDto getHorseDetail(object sender, int horseID, UiReporter reporter, TjkDataSet.AtDetayRow lastRow)
         {
             double total = 0;
             var web = new HtmlWeb();
@@ -976,24 +1028,14 @@ namespace TjkDesktop.Impl
                 var doc = web.Load("http://www.tjk.org/TR/YarisSever/Query/ConnectedPage/AtKosuBilgileri?1=1&QueryParameter_AtId=" + horseID.ToString());
 
                 String pageResult = doc.DocumentNode.InnerHtml.Substring(doc.DocumentNode.InnerHtml.IndexOf("alt="), 19).Substring(5, 14);
-                //int counter = 10;
                 if (pageResult.Substring(0, 3).Equals("404"))
                 {
                     dto.isFailed = true;
                     reporter.status = "Siteden veri alınamadı..!";
                     (sender as BackgroundWorker).ReportProgress((int)Math.Round(total, 8, MidpointRounding.AwayFromZero), reporter);
+                    Thread.Sleep(5);
                     return dto;
                 }
-                /* En son tarihli detay db'de var mı */
-                TjkDataSet dateset = new TjkDataSet();
-                TjkDataSet.AtDetayDataTable dTable = dateset.AtDetay;
-                TjkDesktop.App_Data.TjkDataSetTableAdapters.AtDetayTableAdapter dTableAdapter = new App_Data.TjkDataSetTableAdapters.AtDetayTableAdapter();
-                dTableAdapter.Connection.Open();
-                dTableAdapter.Fill(dTable);
-                /*DB'deki en son 3 kayıt alınıyor*/
-                TjkDataSet.AtDetayRow lastRow = dTable.Where(aa => aa.AtId == horseID).OrderByDescending(ab => ab.Tarih).FirstOrDefault();
-                IEnumerable<TjkDataSet.AtDetayRow> last3Row = dTable.Where(n => n.AtId == horseID).OrderByDescending(q => q.Tarih).Take(3);
-
                 var nodes = doc.DocumentNode.SelectNodes("//div[@id='dataDiv']");
                 var table = doc.DocumentNode.SelectNodes("//table[@id='queryTable']");
 
@@ -1023,7 +1065,7 @@ namespace TjkDesktop.Impl
                         reporter.detayTarih = lastDetail;
                         reporter.percentage = 99.00;
                         (sender as BackgroundWorker).ReportProgress(99, reporter);
-                        Thread.Sleep(1);
+                        Thread.Sleep(5);
                     }
                     else
                     {
@@ -1116,7 +1158,7 @@ namespace TjkDesktop.Impl
                                 reporter.percentage = total;
 
                                 (sender as BackgroundWorker).ReportProgress((int)Math.Round(total, 8, MidpointRounding.AwayFromZero), reporter);
-                                Thread.Sleep(1);
+                                Thread.Sleep(5);
                             }
                             horseInfoDtoList.Add(horse);
                         }
@@ -1139,6 +1181,7 @@ namespace TjkDesktop.Impl
                 dto.isFailed = true;
                 reporter.status = "Siteden veri alınamadı..!";
                 (sender as BackgroundWorker).ReportProgress((int)Math.Round(total, 8, MidpointRounding.AwayFromZero), reporter);
+                Thread.Sleep(5);
                 return dto;
             }
             /*No detail found*/
