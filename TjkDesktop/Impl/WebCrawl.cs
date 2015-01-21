@@ -126,6 +126,7 @@ namespace TjkDesktop.Impl
             dTableAdapter.Connection.Open();
             dTableAdapter.Fill(dTable);
             int totalHorseNum = hipodromList.Sum(x => x.kosular.Sum(y => y.horseList.Count));
+            int totalDetail = hipodromList.Sum(x => x.kosular.Sum(y => y.horseList.Sum(z => z.horseDetails.Count)));
             UiReporter obj = new UiReporter();
             int counter = 0;
             double total = 0.0;
@@ -143,6 +144,7 @@ namespace TjkDesktop.Impl
                         List<TjkDataSet.AtDetayRow> details = dTable.Where(q => q.AtId == horse.atId).ToList();
                         foreach (HorseInfoDto dto in horse.horseDetails)
                         {
+                            total += (double)1 / totalDetail * 100;
                             obj.phase = MainWindow.Phases.Phase3;
                             obj.detayTarih = dto.tarih;
                             double? dereceSaniye = null;
@@ -335,7 +337,6 @@ namespace TjkDesktop.Impl
                                     dto.jokey, dto.antrenor, dto.sahip, dto.ganyan, dto.grup, dto.kosuNo, dto.kosuCinsAdi, dto.handikapKum, dto.handikapCim, dto.atIkramiye.ToString(), dto.s20);
                                 obj.status = "Veritabanına yazılıyor..";
                             }
-                            total += (double)1 / (horse.horseDetails.Count * k.horseList.Count * h.kosular.Count * hipodromList.Count) * 100;
                             obj.percentage = total;
                             (sender as BackgroundWorker).ReportProgress((int)Math.Round(total, 8, MidpointRounding.AwayFromZero), obj);
                             Thread.Sleep(1);
@@ -343,6 +344,8 @@ namespace TjkDesktop.Impl
                     }
                 }
             }
+            dTable.AcceptChanges();
+            dTableAdapter.Connection.Close();
         }
 
         private static void insertHorses(object sender, List<HipodromDto> hipodromList)
@@ -936,11 +939,190 @@ namespace TjkDesktop.Impl
                 }
                 // }
             }
-            /* Detay var mı kontrol ediliyor */
+
+
 
             /* En son tarihli detay db'de var mı */
 
+            TjkDataSet dateset = new TjkDataSet();
+            TjkDataSet.AtDetayDataTable dTable = dateset.AtDetay;
+            TjkDesktop.App_Data.TjkDataSetTableAdapters.AtDetayTableAdapter dTableAdapter = new App_Data.TjkDataSetTableAdapters.AtDetayTableAdapter();
+            dTableAdapter.Connection.Open();
+            dTableAdapter.Fill(dTable);
+            /*DB'deki en son 3 kayıt alınıyor*/
+            TjkDataSet.AtDetayRow lastRow = dTable.Where(aa => aa.AtId == horseID).OrderByDescending(ab => ab.Tarih).FirstOrDefault();
+            IEnumerable<TjkDataSet.AtDetayRow> last3Row = dTable.Where(n => n.AtId == horseID).OrderByDescending(q => q.Tarih).Take(3);
 
+            var nodes = doc.DocumentNode.SelectNodes("//div[@id='dataDiv']");
+            var table = doc.DocumentNode.SelectNodes("//table[@id='queryTable']");
+
+            List<HorseInfoDto> horseInfoDtoList = new List<HorseInfoDto>();
+
+            string classToFind = "grid_6";
+            var grid = doc.DocumentNode.SelectNodes(string.Format("//*[contains(@class,'{0}')]", classToFind));
+            var spans = grid.Descendants("span").ToList();
+
+            string birthDaySpan = System.Text.RegularExpressions.Regex.Split(spans[5].InnerHtml.Trim(), "\r\n")[0];
+
+            if (!String.IsNullOrEmpty(birthDaySpan))
+            {
+                dto.birthDay = DateTime.Parse(birthDaySpan);
+            }
+
+            List<HtmlNode> x = doc.GetElementbyId("tbody0").Elements("tr").ToList();
+            /* Detay var mı kontrol ediliyor */
+
+            if (x.Count > 0)
+            {
+                string[] qq = System.Text.RegularExpressions.Regex.Split(x[0].Elements("td").ToList()[0].InnerText.Trim(), "\r\n");
+                DateTime? lastDetail = qq[0].Trim().Equals("") ? (DateTime?)null : DateTime.Parse(qq[0].Trim());
+                reporter.phase = MainWindow.Phases.Phase3;
+
+                if (lastRow != null && lastDetail.Value.CompareTo(lastRow.Tarih) == 0)
+                {
+                    reporter.status = "Veritabanında mevcut, atlanıyor...";
+                    reporter.detayId = horseID;
+                    reporter.detayTarih = lastDetail;
+                    reporter.percentage = 99.00;
+                    (sender as BackgroundWorker).ReportProgress(99, reporter);
+                    Thread.Sleep(1);
+                }
+                else
+                {
+                    foreach (HtmlNode node in x)
+                    {
+                        HorseInfoDto horse = new HorseInfoDto();
+                        List<HtmlNode> s = node.Elements("td").ToList();
+                        horse.atId = horseID;
+
+                        for (int i = 0; i < s.Count; i++)
+                        {
+                            reporter.status = "Siteden alınıyor..";
+                            string[] lines = System.Text.RegularExpressions.Regex.Split(s[i].InnerText.Trim(), "\r\n");
+                            if (i == 0)
+                            {
+                                horse.tarih = lines[0].Trim().Equals("") ? (DateTime?)null : DateTime.Parse(lines[0].Trim());
+                            }
+
+                            else if (i == 1)
+                            {
+                                horse.sehir = lines[0].Trim();
+                            }
+                            else if (i == 2)
+                            {
+                                horse.mesafe = lines[0].Trim().Equals("") ? (Decimal?)null : Decimal.Parse(lines[0].Trim());
+                            }
+                            else if (i == 3)
+                            {
+                                horse.pist = lines[0].Trim();
+                            }
+                            else if (i == 4)
+                            {
+                                horse.sonucSiraNo = lines[0].Trim();
+                            }
+                            else if (i == 5)
+                            {
+                                horse.derece = lines[0].Trim();
+                            }
+                            else if (i == 6)
+                            {
+                                horse.kilo = lines[0].Trim().Equals("") ? (Double?)null : Double.Parse(lines[0].Trim());
+                            }
+                            else if (i == 7)
+                            {
+                                horse.jokey = lines[0].Trim();
+                            }
+                            else if (i == 8)
+                            {
+                                horse.ganyan = lines[0].Trim();
+                            }
+                            else if (i == 9)
+                            {
+                                horse.grup = lines[0].Trim();
+                            }
+                            else if (i == 10)
+                            {
+                                horse.kosuNo = lines[0].Trim();
+                            }
+                            else if (i == 11)
+                            {
+                                horse.kosuCinsAdi = lines[0].Trim();
+                            }
+                            else if (i == 12)
+                            {
+                                horse.antrenor = lines[0].Trim();
+                            }
+                            else if (i == 13)
+                            {
+                                horse.sahip = lines[0].Trim();
+                            }
+                            else if (i == 14)
+                            {
+                                horse.handikapCim = lines[0].Trim();
+                            }
+                            else if (i == 15)
+                            {
+                                horse.handikapKum = lines[0].Trim();
+                            }
+                            else if (i == 16)
+                            {
+                                horse.atIkramiye = lines[0].Trim().Equals("") ? (Decimal?)null : Decimal.Parse(lines[0].Trim());
+                            }
+                            else if (i == 19)
+                            {
+                                horse.s20 = lines[0].Trim();
+                            }
+                            total += (double)1 / (s.Count * x.Count) * 100;
+                            reporter.detayId = horse.atId;
+                            reporter.detayTarih = horse.tarih;
+                            reporter.percentage = total;
+
+                            (sender as BackgroundWorker).ReportProgress((int)Math.Round(total, 8, MidpointRounding.AwayFromZero), reporter);
+                            Thread.Sleep(1);
+                        }
+                        horseInfoDtoList.Add(horse);
+                    }
+                }
+            }
+            dto.horseInfoList = horseInfoDtoList;
+            return dto;
+        }
+
+        //Todo - UI'da farklı bir alan eklenecek, tek horseID ile tüm detayların çekilmesi sağlanacak
+        public static BdayCarrierDto getAllHorseDetails(object sender, int horseID, UiReporter reporter)
+        {
+            double total = 0;
+            var web = new HtmlWeb();
+            var doc = web.Load("http://www.tjk.org/TR/YarisSever/Query/ConnectedPage/AtKosuBilgileri?1=1&QueryParameter_AtId=" + horseID.ToString());
+            String pageResult = doc.DocumentNode.InnerHtml.Substring(doc.DocumentNode.InnerHtml.IndexOf("alt="), 19).Substring(5, 14);
+            BdayCarrierDto dto = new BdayCarrierDto();
+            //int counter = 10;
+            if (pageResult.Substring(0, 3).Equals("404"))
+            {
+                //while (counter < 10)
+                //{
+                doc = web.Load("http://www.tjk.org/TR/YarisSever/Query/ConnectedPage/AtKosuBilgileri?1=1&QueryParameter_AtId=" + horseID.ToString());
+                pageResult = doc.DocumentNode.InnerHtml.Substring(doc.DocumentNode.InnerHtml.IndexOf("alt="), 19).Substring(5, 14);
+                if (pageResult.Substring(0, 3).Equals("404"))
+                {
+                    dto.isFailed = true;
+                    reporter.status = "Siteden veri alınamadı..!";
+                    (sender as BackgroundWorker).ReportProgress((int)Math.Round(total, 8, MidpointRounding.AwayFromZero), reporter);
+                    Thread.Sleep(50);
+                    //counter--;
+                }
+                else
+                {
+                    //break;
+                }
+                // }
+            }
+
+            TjkDataSet dateset = new TjkDataSet();
+            TjkDataSet.AtDetayDataTable dTable = dateset.AtDetay;
+            TjkDesktop.App_Data.TjkDataSetTableAdapters.AtDetayTableAdapter dTableAdapter = new App_Data.TjkDataSetTableAdapters.AtDetayTableAdapter();
+            dTableAdapter.Connection.Open();
+            dTableAdapter.Fill(dTable);
             var nodes = doc.DocumentNode.SelectNodes("//div[@id='dataDiv']");
             var table = doc.DocumentNode.SelectNodes("//table[@id='queryTable']");
 
@@ -1056,7 +1238,6 @@ namespace TjkDesktop.Impl
             dto.horseInfoList = horseInfoDtoList;
             return dto;
         }
-
         private static string getNumericPartAsStr(string text)
         {
             int n;
