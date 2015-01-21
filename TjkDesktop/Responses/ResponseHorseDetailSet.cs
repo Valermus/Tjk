@@ -10,5 +10,9 @@ namespace TjkDesktop.Responses
     {
         public Exception error { set; get; }
         public List<String> failedToRetrieveIds { set; get; }
+        public ResponseHorseDetailSet()
+        {
+            failedToRetrieveIds = new List<String>();
+        }
     }
 }

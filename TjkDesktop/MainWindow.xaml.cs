@@ -198,7 +198,7 @@ namespace TjkDesktop
                 ResponseHorseDetailSet response = WebCrawl.InitializeHorsesAndDetails(sender);
                 if (response.failedToRetrieveIds != null)
                 {
-                    while (response.failedToRetrieveIds != null)
+                    while (response.failedToRetrieveIds.Count > 0)
                     {
                         string msg = string.Join(Environment.NewLine, response.failedToRetrieveIds);
                         if (MessageBox.Show("Bu ID'deki atların detaylarına ulaşılamamıştır:" + msg + "\nTekrar denensin mi?", "Erişilemeyen At Detayları", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)

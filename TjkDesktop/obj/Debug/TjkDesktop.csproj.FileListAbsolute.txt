@@ -39,3 +39,4 @@ C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.csproj.GenerateR
 C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.exe
 C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.pdb
 C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\TjkDesktop.pdb
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.csprojResolveAssemblyReference.cache
