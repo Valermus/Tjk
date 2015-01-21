@@ -59,8 +59,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Responses\ResponseAuthantication.cs" />
     <Compile Include="Responses\ResponseHipodrom.cs" />
     <Compile Include="Responses\ResponseHorseDetailSet.cs" />
+    <Compile Include="Util\Enums.cs" />
     <Page Include="LoadingScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -135,9 +137,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Util\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Tjk_Logo.ico" />
   </ItemGroup>

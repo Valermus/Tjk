@@ -18,6 +18,7 @@ namespace TjkDesktop.Impl
     class WebCrawl
     {
         private static List<HipodromDto> hipodroms;
+        private static sealed string validationPath = "http://www.gevezecafe.com/Validation.html";
 
         public class UiReporter
         {
@@ -33,15 +34,64 @@ namespace TjkDesktop.Impl
         }
 
         #region Unused Initiation Method
-        public static void initiate(string date)
+        public static ResponseAuthantication Validate()
         {
-            /*Phase-1: Tarihe gore hipodrom listesini alir */
-            //List<HipodromDto> hipodromList = getHipodromsByDate(date);
-            //insertHipodroms(hipodromList);
-            /*Phase-2: Hipodrom Listesini, hipodrom listesindeki kosulara gore, kosu bilgileri ve at bilgilerini doldurarak geri dondurur */
-            //hipodromList = setYarisProgramiToHipodroms(hipodromList);
-            /*Phase-3: Hipodrom Listesindeki kosu ve at bilgilerindeki yaris sonucu eksiklerini, hipodrom listesindeki kosulara gore, kosu bilgileri ve at bilgilerini doldurarak geri dondurur */
-            //hipodromList = setYarisSonuclariToHipodroms(hipodromList);
+            WebClient wClient = new WebClient();
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            ResponseAuthantication response = new ResponseAuthantication();
+            try
+            {
+                doc.Load(wClient.OpenRead(validationPath), Encoding.UTF8);
+
+                string[] resultSpl = doc.DocumentNode.InnerText.Split('=');
+
+                int result = int.Parse(resultSpl[1]);
+                /*Program can no longer be used */
+                if (result == 0)
+                {
+                    response.status = Util.Enums.ErrorStatus.CantBeUsed;
+                    response.message = "Program kullanılamaz!";
+                    return response;
+                }
+                else
+                {
+                    response.status = Util.Enums.ErrorStatus.Success;
+                    response.message = "Validation başarılı";
+                    return response;
+                }
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse errorResponse = ex.Response as HttpWebResponse;
+                if (errorResponse == null)
+                {
+                    //No connection
+                    response.status = Util.Enums.ErrorStatus.NoConnection;
+                    response.message = "Lütfen internet bağlantınızı kontrol edin, Internet bağlantısı olmadan veri alınamayacağı için programı kullanamazsınız!";
+                    return response;
+                }
+                else if (errorResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    //Couldn't find Validation page, connect to developer
+                    response.status = Util.Enums.ErrorStatus.ValidationNotFound;
+                    response.message = "Validation dosyası bulunamadı! Lütfen yönetici ile görüşürün!";
+                    return response;
+                }
+                else
+                {
+                    //Other unknown errors
+                    response.status = Util.Enums.ErrorStatus.Failed;
+                    response.message = ex.Message;
+                    return response;
+                }
+            }
+            catch (Exception other)
+            {
+                response.status = Util.Enums.ErrorStatus.Failed;
+                response.message = other.Message;
+                return response;
+            }
+
         }
         #endregion
         /* Phase-1: Hipodromların cekilerek db'e eklenmesi */

@@ -42,6 +42,19 @@ namespace TjkDesktop
         }
         private void Window_ContentRendered(object sender, EventArgs e)
         {
+            /* Check for validation */
+            ResponseAuthantication response = WebCrawl.Validate();
+            if (response.status == Util.Enums.ErrorStatus.Success)
+            {
+                dtPicker.IsEnabled = true;
+                btnHipodrom.IsEnabled = true;
+            }
+            else
+            {
+                MessageBox.Show(response.message, response.status.ToString(), MessageBoxButton.OK, MessageBoxImage.Warning);
+                dtPicker.IsEnabled = false;
+                btnHipodrom.IsEnabled = false;
+            }
         }
         private void InitializeButtons()
         {
