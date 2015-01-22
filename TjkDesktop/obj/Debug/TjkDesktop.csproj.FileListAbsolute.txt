@@ -20,9 +20,10 @@ C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop
 C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\TjkDesktop.exe
 C:\Users\galip.erdem\Documents\Visual Studio 2013\Projects\TjkDesktop\TjkDesktop\obj\Debug\TjkDesktop.pdb
 C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\TJK.accdb
-C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\TjkDesktop.exe
-C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\HtmlAgilityPack.dll
 C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\TjkDesktop.exe.config
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\TjkDesktop.exe
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\TjkDesktop.pdb
+C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\HtmlAgilityPack.dll
 C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\HtmlAgilityPack.pdb
 C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\HtmlAgilityPack.xml
 C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\LoadingScreen.baml
@@ -38,5 +39,3 @@ C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.Properties.Resou
 C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.csproj.GenerateResource.Cache
 C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.exe
 C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.pdb
-C:\Users\galip.erdem\Source\Tjk\TjkDesktop\bin\Debug\TjkDesktop.pdb
-C:\Users\galip.erdem\Source\Tjk\TjkDesktop\obj\Debug\TjkDesktop.csprojResolveAssemblyReference.cache

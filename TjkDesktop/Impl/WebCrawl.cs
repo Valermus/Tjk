@@ -176,7 +176,7 @@ namespace TjkDesktop.Impl
             dTableAdapter.Connection.Open();
             dTableAdapter.Fill(dTable);
             int totalHorseNum = hipodromList.Sum(x => x.kosular.Sum(y => y.horseList.Count));
-            //Hack dto.fail'dan gelindiğinde burasi z.horseDetails null geliyor. Kontrol et.
+
             int totalDetail = hipodromList.Sum(x => x.kosular.Sum(y => y.horseList.Sum(z => z.horseDetails.Count)));
             UiReporter obj = new UiReporter();
             int counter = 0;
@@ -410,6 +410,7 @@ namespace TjkDesktop.Impl
             double total = 0;
             int counter = 0;
             int totalHorseNum = hipodromList.Sum(x => x.kosular.Sum(y => y.horseList.Count));
+
             UiReporter obj = new UiReporter();
             foreach (HipodromDto h in hipodromList)
             {
@@ -417,6 +418,8 @@ namespace TjkDesktop.Impl
                 {
                     foreach (HorseDto a in k.horseList)
                     {
+                        //Hack yeni eklenen 
+                        counter++;
                         obj.toplamAt = counter + "/" + totalHorseNum;
                         obj.atName = a.atAdi;
                         obj.detayId = a.atId;
@@ -996,21 +999,14 @@ namespace TjkDesktop.Impl
                 else
                 {
                     //Hack geliştirme yapılmalı lambda ile 
-                    foreach (HipodromDto h in hipodroms)
+                    HorseDto horse = hipodroms.SelectMany(a => a.kosular)
+                   .SelectMany(b => b.horseList)
+                   .FirstOrDefault(c => c.atId == int.Parse(horseId));
+                    if (horse != null)
                     {
-                        foreach (KosuDto k in h.kosular)
-                        {
-                            foreach (HorseDto horse in k.horseList)
-                            {
-                                if (horse.atId == int.Parse(horseId))
-                                {
-                                    horseDetails = dto.horseInfoList;
-                                    horse.horseDetails = horseDetails;
-                                    horse.birthDate = dto.birthDay;
-                                }
-
-                            }
-                        }
+                        horseDetails = dto.horseInfoList;
+                        horse.horseDetails = horseDetails;
+                        horse.birthDate = dto.birthDay;
                     }
                 }
             }
